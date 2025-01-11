@@ -70,7 +70,8 @@ const [upodateLoading,setupdateLoading]=useState(false)
     }
   };
   return (
-    <div className="w-full h-full gap-2 grid grid-cols-4  mt-4">
+    <div>
+      {loading?<div>Loading ...</div>:    <div className="w-full h-full gap-2 grid grid-cols-4  mt-4">
       {Array.isArray(data) && data?.length > 0 ? (
         data.map((cur: any, index: number) => (
           <div>
@@ -139,7 +140,9 @@ const [upodateLoading,setupdateLoading]=useState(false)
       ) : (
         <div className="flex h-full items-center justify-center text-lg font-medium"></div>
       )}
+    </div>}
     </div>
+
   );
 };
 
