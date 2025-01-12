@@ -1,3 +1,5 @@
+
+import React,{ useEffect, useState } from "react"; 
 import {
   Dialog,
   DialogContent,
@@ -6,10 +8,13 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input"; // Import ShadCN Input component
-import { chatSendMessageApi, getChaMessageApi } from "../../../services/services";
+import {
+  chatSendMessageApi,
+  getChaMessageApi,
+} from "../../../services/services";
 import axios, { AxiosError } from "axios";
 import { Send, Paperclip, Smile, Mic, Image } from "lucide-react";
-import { useEffect, useState } from "react";
+
 import { toast } from "sonner";
 interface ChatScreenProps {
   open: boolean;
@@ -30,7 +35,7 @@ const ChatScreen = ({ open, setOpen, userDetails, id }: ChatScreenProps) => {
       if (apiResp.status === 200) {
         // console.log(apiResp?.data?.conversations);
         setChatData(apiResp?.data?.conversations);
-        toast.success(apiResp?.data?.message);
+        // toast.success(apiResp?.data?.message);
         // fetchSearchResults && fetchSearchResults({ _id: _id?.id });
       } else {
         toast.error(apiResp.data?.message);
@@ -48,28 +53,27 @@ const ChatScreen = ({ open, setOpen, userDetails, id }: ChatScreenProps) => {
     }
   };
   // console.log(`userId=${id}&otherUserId=${userDetails?._id}`)
-  useEffect(() => {
-    console.log("object");
+  React.useEffect(() => {
+    console.log('umesh')
     if (id && userDetails?._id) {
       let query = `userId=${id}&otherUserId=${userDetails?._id}`;
 
       fetchchatData && fetchchatData(query);
     } else return;
-  }, []);
+  }, [open]);
 
   const sendChatRequest = async (postData: any) => {
-    // setLoading(true);
+    setLoading(true);
 
     try {
       let apiResp = await chatSendMessageApi(postData);
-      
-      if (apiResp.status === 200) {
+      console.log(apiResp);
+      if (apiResp.status === 201) {
         console.log(apiResp?.data?.users);
         // setData(apiResp?.data?.users);
         let query = `userId=${id}&otherUserId=${userDetails?._id}`;
-
+        setMessage('')
         fetchchatData && fetchchatData(query);
-     
       } else {
         toast.error(apiResp.data?.message);
       }
@@ -82,11 +86,10 @@ const ChatScreen = ({ open, setOpen, userDetails, id }: ChatScreenProps) => {
         toast.error(error.message);
       }
     } finally {
-    //   setLoading(false); // Set loading state to false when request completes (whether success or failure)
+      setLoading(false); // Set loading state to false when request completes (whether success or failure)
     }
   };
-console.log(userDetails)
-console.log(id)
+  console.log(chatData);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[450px] h-[500px] flex flex-col p-0  border border-blue-800">
@@ -100,63 +103,40 @@ console.log(id)
         </DialogHeader>
         <DialogDescription className="flex-1 overflow-y-auto no-scrollbar">
           {/* Chat Messages */}
-          <div className=" p-4 space-y-4 bg-white">
-            {/* Sender message */}
-            <div className="flex items-start space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gray-400" />
-              <div className="bg-gray-100 px-3 py-2 rounded-lg max-w-xs text-sm">
-                Do you have these notes from class? I had to miss it, so I'm
-                going around asking everyone about it. It would help a lot if
-                you have it.
-              </div>
-            </div>
 
-            {/* Receiver message */}
-            <div className="flex justify-end">
-              <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs text-sm">
-                Do you have these notes from class? I had to miss it, so I'm
-                going around asking everyone about it. It would help a lot if
-                you have it.
-              </div>
-            </div>
-            {/* Sender message */}
-            <div className="flex items-start space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gray-400" />
-              <div className="bg-gray-100 px-3 py-2 rounded-lg max-w-xs text-sm">
-                Do you have these notes from class? I had to miss it, so I'm
-                going around asking everyone about it. It would help a lot if
-                you have it.
-              </div>
-            </div>
+          {chatData && Array.isArray(chatData) && chatData?.length > 0 ? (
+            chatData.map((cur: any, index: number) => (
+              <div className=" p-4 space-y-4 bg-white" key={index}>
+                {id === cur?.senderUserId ? (
+                  <div className="flex items-start space-x-2">
+                    <div className="w-8 h-8 rounded-full bg-gray-400" />
+                    <div className="bg-gray-100 px-3 py-2 rounded-lg max-w-xs text-sm">
+                        {cur?.message}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-end">
+                    <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs text-sm">
+                        {cur?.message}
+                    </div>
+                  </div>
+                )}
+                {/* Sender message */}
 
-            {/* Receiver message */}
-            <div className="flex justify-end">
-              <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs text-sm">
-                Do you have these notes from class? I had to miss it, so I'm
-                going around asking everyone about it. It would help a lot if
-                you have it.
+                {/* Receiver message */}
               </div>
+            ))
+          ) : (
+            <div></div>
+          )}
+          {loading ? (
+            <div className="text-xs font-normal text-gray-500 bg-gray-100 p-2 text-left">
+              {" "}
+              Loading...{" "}
             </div>
-
-            {/* Sender message */}
-            <div className="flex items-start space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gray-400" />
-              <div className="bg-gray-100 px-3 py-2 rounded-lg max-w-xs text-sm">
-                Do you have these notes from class? I had to miss it, so I'm
-                going around asking everyone about it. It would help a lot if
-                you have it.
-              </div>
-            </div>
-
-            {/* Receiver message */}
-            <div className="flex justify-end">
-              <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs text-sm">
-                Do you have these notes from class? I had to miss it, so I'm
-                going around asking everyone about it. It would help a lot if
-                you have it.
-              </div>
-            </div>
-          </div>
+          ) : (
+            <div></div>
+          )}
         </DialogDescription>
         {/* Input Field */}
         <DialogFooter className="w-full">
@@ -186,7 +166,7 @@ console.log(id)
               className="p-2 text-white"
               onClick={() =>
                 sendChatRequest({
-                    receiverUserId: userDetails?._id,
+                  receiverUserId: userDetails?._id,
                   senderUserId: id,
                   message: message,
                 })
