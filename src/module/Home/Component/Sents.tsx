@@ -122,21 +122,21 @@ const Sents = ({ setConnectionCount, _id }: SentsProps) => {
                 </div>
                 <div className="flex justify-center items-center space-x-2 text-sm">
                   <Button
-                    className="h-8 w-[60px] text-sm font-semibold"
+                    className="h-8 w-[80px] text-sm font-semibold px-2"
                     disabled={connectionReqLoading}
                     // onClick={()=>fetchConnectionRequest({
                     //        receiverId: cur?._id,
                     //        senderId: _id?.id,
                     // })}
                   >
-                    {connectionReqLoading ? "Wait..." : "Accept"}
+                    {connectionReqLoading ? "Wait..." : "Withdraw "}
                   </Button>
-                  <Link
+                  {/* <Link
                     to={"#"}
                     className="hover:underline hover:underline-offset-4 font-medium text-gray-600"
                   >
                     Dismiss
-                  </Link>
+                  </Link> */}
                 </div>
               </Card>
             ))

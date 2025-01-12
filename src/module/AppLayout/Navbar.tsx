@@ -18,13 +18,21 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import axios, { AxiosError } from "axios";
 import { profileRequest } from "@/services/services";
-
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 
 const Navbar = () => {
   const { search } = useLocation();
- const [_id, setId] = useState<any>();
- const [data,setData]=useState<any>()
- const navigate=useNavigate()
+  const [_id, setId] = useState<any>();
+  const [data, setData] = useState<any>();
+  const navigate = useNavigate();
   useEffect(() => {
     const params = search && search?.split("?")[1].split("&");
 
@@ -40,19 +48,17 @@ const Navbar = () => {
     return () => {};
   }, [search]);
 
-
-
   const menu = Menu;
 
   const profileRequestRequest = async (postData: any) => {
     // setconnectionReqLoading(true);
 
     try {
-      let apiResp:any = await profileRequest(postData);
+      let apiResp: any = await profileRequest(postData);
       console.log(apiResp);
       if (apiResp.status === 200) {
-        setData(apiResp?.data?.Userdetails)
-        
+        setData(apiResp?.data?.Userdetails);
+
         // toast.success(apiResp?.data?.message)
       } else {
         toast.error(apiResp.data?.message);
@@ -66,10 +72,10 @@ const Navbar = () => {
         toast.error(error.message);
       }
     } finally {
-        // setconnectionReqLoading(false); // Set loading state to false when request completes (whether success or failure)
+      // setconnectionReqLoading(false); // Set loading state to false when request completes (whether success or failure)
     }
   };
-console.log(data)
+  console.log(data);
   return (
     <nav className="w-full flex justify-between items-center py-3 bg-[#f8f9fa] border-b border-black/10 px-2">
       <div className="w-[25%] flex items-center space-x-2">
@@ -83,7 +89,7 @@ console.log(data)
         </div>
       </div>
       <div className="w-[65%]">
-        <ul className="flex items-center space-x-4">
+        {/* <ul className="flex items-center space-x-4">
           {menu?.map((menu: IMenuItem, index: number) => (
             <li className="space-y-4 font-medium  text-sm">
               {Array.isArray(menu?.options) && menu?.options?.length > 0 ? (
@@ -146,16 +152,70 @@ console.log(data)
               )}
             </li>
           ))}
-        </ul>
+        </ul> */}
+
+        <NavigationMenu className="flex justify-end max-w-5xl">
+          <NavigationMenuList className="w-full bg-gray-100 flex items-center">
+            {menu.map((cur: IMenuItem, index: number) =>
+              cur?.options && cur?.options ? (
+                <NavigationMenuItem className="">
+                  <NavigationMenuTrigger className="flex flex-col items-center space-y-1 bg-gray-100 rounded-none">
+                    <div>
+                      {cur?.iconName &&
+                        cur?.iconName(`w-[24px] h-[24px] text-white mt-1`)}
+                    </div>
+                    <div className="text-[10px] font-normal text-gray-500 flex items-center"><span>{cur?.name}</span>
+                    <span><ChevronDown className="w-4 h-4"/></span></div>
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="w-[250px] flex flex-col justify-center p-4">
+                      {cur?.options.map((item: any, ind: number) => (
+                        <li className="ml-4 text-sm font-normal">
+                          <NavigationMenuLink asChild>
+                            <a href="#">
+                            {item?.name}
+                            </a>
+                            
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ) : (
+                <NavigationMenuItem className="bg-gray-100 rounded-none">
+                  {/* <Link href="/docs" legacyBehavior passHref> */}
+                  <NavigationMenuLink className={`bg-gray-100 rounded-none ${navigationMenuTriggerStyle()}`}>
+                    <div  className="flex flex-col items-center ">
+                    <div>  {cur?.iconName &&
+                        cur?.iconName(`w-[24px] h-[24px] text-white mt-1`)}</div>
+                    <div className="text-[10px] font-normal text-gray-500">{cur?.name}</div>
+                    </div>
+              
+                  </NavigationMenuLink>
+                  {/* </Link> */}
+                </NavigationMenuItem>
+              )
+            )}
+          </NavigationMenuList>
+        </NavigationMenu>
       </div>
-      <div className="w-[10%] flex justify-end">
+      <div className="w-[10%] flex justify-end text-gray-500">
         <Popover>
-          <PopoverTrigger asChild onClick={()=>profileRequestRequest({_id:_id?.id})}>
+          <PopoverTrigger
+            asChild
+            onClick={() => profileRequestRequest({ _id: _id?.id })}
+          >
             <Button
               variant="outline"
               className="border-none hover:bg-[#f8f9fa] bg-[#f8f9fa]"
             >
-              <div className={cn("flex flex-col items-center justify-center space-x-1", {})}>
+              <div
+                className={cn(
+                  "flex flex-col items-center justify-center space-x-1",
+                  {}
+                )}
+              >
                 <span>
                   <img
                     src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
@@ -165,33 +225,42 @@ console.log(data)
                   />
                 </span>
                 <span className="flex items-center space-x-2">
-                <span className=" text-xs">
-                  Me
-                </span>
-                <ChevronDown className=" mt-1" />
+                  <span className=" text-[10px] ">Me</span>
+                  <ChevronDown className=" mt-1" />
                 </span>
               </div>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-80">
-<div className="space-y-4">
-  <div className="flex items-center space-x-4">
-    <img className="w-[60px] h-[60px] rounded-full" src={data?.profileImage} alt={data?.firstname}/>
-    <div className="space-y-1">
-      <div className="font-bold text-lg text-black">{data?.firstname||"-"} {data?.lastname||"-"}</div>
-      <div className="font-normal text-sm">{data?.designation||"-"}</div>
-    </div>
-  </div>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <img
+                  className="w-[60px] h-[60px] rounded-full"
+                  src={'https://mdbcdn.b-cdn.net/img/new/avatars/8.webp'}
+                  alt={data?.firstname}
+                />
+                <div className="space-y-1">
+                  <div className="font-bold text-lg text-black">
+                    {data?.firstname || "-"} {data?.lastname || "-"}
+                  </div>
+                  <div className="font-normal text-sm">
+                    {data?.designation || "-"}
+                  </div>
+                </div>
+              </div>
 
-  <Button className="w-full border border-blue-600 rounded-full text-xs h-6" variant={'outline'}
-  onClick={()=>{
-    navigate(`/pages/profile?id=${_id?.id}`)
-  }}
-  >View Profile</Button>
-</div>
+              <Button
+                className="w-full border border-blue-600 rounded-full text-xs h-6"
+                variant={"outline"}
+                onClick={() => {
+                  navigate(`/pages/profile?id=${_id?.id}`);
+                }}
+              >
+                View Profile
+              </Button>
+            </div>
           </PopoverContent>
         </Popover>
-
       </div>
     </nav>
   );

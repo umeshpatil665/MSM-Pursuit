@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import ReportDialog from "./ReportDialog";
 interface ConnectionsProps {
   _id: any;
   setConnectionCount: React.Dispatch<React.SetStateAction<any>>;
@@ -19,6 +20,7 @@ interface ConnectionsProps {
 const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();
+  const [reportOpen,setReportOpen]=useState<boolean>(false)
   const fetchSearchConnection = async (postData: any) => {
     setLoading(true);
 
@@ -105,16 +107,45 @@ const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
                     </PopoverTrigger>
                     <PopoverContent className="w-48">
                       <ul className="space-y-1">
-                        {options.map((option) => (
-                          <li key={option.value}>
-                            <button
-                              className="w-full text-left px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
-                              // onClick={() => handleOptionClick(option.value)}
-                            >
-                              {option.label}
-                            </button>
-                          </li>
-                        ))}
+                        <li>
+                          {" "}
+                          <Button
+                          variant={'outline'}
+                            className="w-full border-none flex justify-start px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
+                            // onClick={() => handleOptionClick(option.value)}
+                          >
+                            Disconnection
+                          </Button>
+                        </li>
+ 
+                        <li>
+                          <Button
+                           variant={'outline'}
+                            className="w-full border-none flex justify-start px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
+                            // onClick={() => handleOptionClick(option.value)}
+                          >
+                            Block
+                          </Button>
+                        </li>
+                        <li>
+                          <Button
+                           variant={'outline'}
+                            className="w-full border-none flex justify-start px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
+                            onClick={() =>setReportOpen(!reportOpen)}
+                          >
+                            Report
+                          </Button>
+
+                        </li>
+                        <li>
+                          <Button
+                           variant={'outline'}
+                            className="w-full border-none flex justify-start px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
+                            // onClick={() => handleOptionClick(option.value)}
+                          >
+                           View More
+                          </Button>
+                        </li>
                       </ul>
                     </PopoverContent>
                   </Popover>
@@ -127,8 +158,9 @@ const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
           ))}
         </ul>
       ) : (
-        <div>No data</div>
+        <div>No Connection available</div>
       )}
+      <ReportDialog open={reportOpen} setOpen={setReportOpen}/>
     </div>
   );
 };
