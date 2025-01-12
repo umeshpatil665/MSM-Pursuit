@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import axios, { AxiosError } from "axios";
-import { profileRequest } from "@/services/services";
+import { getGlobalSearchApi, profileRequest } from "@/services/services";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -27,12 +27,56 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
-
+// @ts-ignore
+import debounce from "lodash.debounce";
 const Navbar = () => {
   const { search } = useLocation();
   const [_id, setId] = useState<any>();
   const [data, setData] = useState<any>();
+  const [open,setOpen]=useState(false)
+  const [searchValue, setSearchValue] = useState("");
+   const [results, setResults] = useState<any[]>([]);
+   const [loading,setLoading]=useState(false)
   const navigate = useNavigate();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+    const value = e.target.value;
+    if (value) {
+      let obj = {
+        query: value,
+      };
+    const query=`q=${value}&page=1&limit=10&_id=${ _id?.id}`
+      fetchSearchResults(query);
+    } else {
+      setResults([]);
+    }
+  };
+
+  const fetchSearchResults = debounce(async (postData: any) => {
+    setLoading(true);
+    try {
+      let apiResp = await getGlobalSearchApi(postData);
+
+      if (apiResp.status === 200) {
+
+        setResults(apiResp?.data?.data);
+      } else {
+        // toast.error(apiResp.data?.message);
+      }
+      return apiResp.data;
+    } catch (err) {
+      let error = err as Error | AxiosError;
+      if (axios.isAxiosError(error)) {
+        // toast.error(error.response?.data.message);
+      } else {
+        // toast.error(error.message);
+      }
+    } finally {
+        setLoading(false); // Set loading state to false when request completes (whether success or failure)
+    }
+  },500);
+
   useEffect(() => {
     const params = search && search?.split("?")[1].split("&");
 
@@ -84,75 +128,50 @@ const Navbar = () => {
         </Link>
 
         <div className="w-[60%] relative flex items-center">
-          <Input placeholder="Search" aria-label="Search" className=" w-full" />
-          <Search className="absolute w-5 h-5 ml-[80%] text-red-500" />
+          {/* <Input placeholder="Search" aria-label="Search" className=" w-full" />
+          <Search className="absolute w-5 h-5 ml-[80%] text-red-500" /> */}
+
+                    <Popover open={open}>
+                      <PopoverTrigger >
+                        <div className="w-full relative flex justify-between items-center">
+                      <Input
+                            id="width"
+                            placeholder="Search Users"
+                            className="w-[250px] h-10"
+                            value={searchValue}
+                            onChange={handleInputChange}
+                            // onClick={()=>setOpen(true)}
+          onFocus={()=>setOpen(true)}
+                          />
+                          <Search className="w-[24px] h-[24px] text-blue-600 absolute ml-[85%] "/>
+                          </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80"
+                     onPointerDownOutside={()=>setOpen(false)}
+                      >
+                        <div>
+          
+                          <div className="h-[200px] overflow-auto mt-2">
+                            {
+                              loading?<div>Loading...</div>:         <ul className="space-y-2">
+                              {Array.isArray(results)&&results?.length>0?results.map((item: any, index) => (
+                                <li key={index} className="text-xs font-medium flex items-center space-x-2">
+                                  
+                                 <span>{item.firstname} - {item.lastname}</span> 
+                                </li>
+                              )):<li></li>}
+                            </ul>
+                            }
+                   
+
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
         </div>
       </div>
       <div className="w-[65%]">
-        {/* <ul className="flex items-center space-x-4">
-          {menu?.map((menu: IMenuItem, index: number) => (
-            <li className="space-y-4 font-medium  text-sm">
-              {Array.isArray(menu?.options) && menu?.options?.length > 0 ? (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="border-none hover:bg-[#f8f9fa] bg-[#f8f9fa]"
-                    >
-                      <div
-                        key={`${menu?.name}-${index + 1}`}
-                        className={cn("flex flex-col items-center justify-center space-x-1", {})}
-                      >
-                        <span>
-                          {menu.iconName &&
-                            menu.iconName(
-                              `w-[32px] h-[32px] text-white mt-1`
-                            )}
-                        </span>
-                        <span className="text-black flex items-center">
-                          <span className="text-xs">{menu?.name}</span>  <ChevronDown className="underline  hover:text-blue-600" />
-                        </span>
-                       
-                      </div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-60">
-                    <ul>
-                      {menu?.options?.map((submenu: any, ind: number) => (
-                        <li className="flex items-center  px-4 border-l border-white">
-                          <Link
-                            to={submenu.path}
-                            className={cn(
-                              "w-full p-2 ml-2 h-full flex items-center space-x-2"
-                            )}
-                          >
-                            <span>{submenu?.name}</span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </PopoverContent>
-                </Popover>
-              ) : (
-                <div className={cn("w-full")}>
-                  <Link
-                    to={`/${menu?.path}?id=${_id?.id&&_id?.id}`}
-                    key={`${menu?.name}-${index + 1}`}
-                    className={cn("flex flex-col items-center", {})}
-                  >
-                    <span>
-                      {menu.iconName &&
-                        menu.iconName(`w-[22px] h-[22px] text-white mt-1`)}
-                    </span>
-                    <span className=" text-xs">
-                      {menu?.name}
-                    </span>
-                  </Link>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul> */}
+
 
         <NavigationMenu className="flex justify-end max-w-5xl">
           <NavigationMenuList className="w-full bg-gray-100 flex items-center">

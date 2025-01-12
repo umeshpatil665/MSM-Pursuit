@@ -17,3 +17,9 @@ export const GET_CONNECTION_API=apiUrl+"/api/v1/getUserConnections"
 export const GET_SENDER_API=apiUrl+"/api/v1/getConnectionListBysender"
 
 export const SENDER_WITHDRAW_REQUEST =apiUrl+'/api/v1/deleteconnectionrequest'
+
+// chating api
+ export const CHAT_GET_API=apiUrl+'/api/v1/fetch-conversations'
+ export const SEND_CHAT_RESPONSE_API=apiUrl+"/api/v1/conversations"
+
+ export const GLOBAL_SEARCH=apiUrl+"/api/v1/globalSearch"

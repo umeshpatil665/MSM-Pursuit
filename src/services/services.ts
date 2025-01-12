@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
-import { CONNECTION_REQUEST, GET_CONNECTION_API, GET_PROFILES, GET_SENDER_API, GET_SUJJECTION_API, INVITATION_LIST, JOKES_URL, LOGIN_URL, SEARCH_CONNECTION, SENDER_WITHDRAW_REQUEST, UPDATE_CONNECTION_STATUS } from "./api"
+import { CHAT_GET_API, CONNECTION_REQUEST, GET_CONNECTION_API, GET_PROFILES, GET_SENDER_API, GET_SUJJECTION_API, GLOBAL_SEARCH, INVITATION_LIST, JOKES_URL, LOGIN_URL, SEARCH_CONNECTION, SEND_CHAT_RESPONSE_API, SENDER_WITHDRAW_REQUEST, UPDATE_CONNECTION_STATUS } from "./api"
 
 // export const jokesFetching=()=>{
 //     axios.get('/api/v1/jokes').then((d: AxiosResponse) => {
@@ -74,5 +74,24 @@ export function jokesFetching(
   export const senderWithdrawApi=(postData: any) => {
     return axios
       .post(`${SENDER_WITHDRAW_REQUEST}`,postData)
+      .then((d: AxiosResponse<any>) => d);
+  };
+
+  export const chatSendMessageApi=(postData: any) => {
+    return axios
+      .post(`${SEND_CHAT_RESPONSE_API}`,postData)
+      .then((d: AxiosResponse<any>) => d);
+  };
+
+  export const getChaMessageApi=(query: string) => {
+    return axios
+      .get(`${CHAT_GET_API}?${query}`)
+      .then((d: AxiosResponse<any>) => d);
+  };
+  
+  export const getGlobalSearchApi=(query: string) => {
+    // console.log(query)
+    return axios
+      .get(`${GLOBAL_SEARCH}?${query}`)
       .then((d: AxiosResponse<any>) => d);
   };

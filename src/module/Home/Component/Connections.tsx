@@ -4,7 +4,7 @@ import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { getConnection } from "@/services/services";
 import { toast } from "sonner";
 import axios, { AxiosError } from "axios";
-import { MessageSquareMore } from "lucide-react";
+import { Ban, ClipboardMinus, MessageSquareMore, Power } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -114,33 +114,33 @@ const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
                           {" "}
                           <Button
                           variant={'outline'}
-                            className="w-full border-none flex justify-start px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
+                            className="w-full border-none flex justify-start items-center  px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
                             // onClick={() => handleOptionClick(option.value)}
                           >
-                            Disconnection
+                           <span><Power /> </span><span>Disconnection</span>
                           </Button>
                         </li>
  
                         <li>
                           <Button
                            variant={'outline'}
-                            className="w-full border-none flex justify-start px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
+                            className="w-full border-none flex justify-start items-center  px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
                             // onClick={() => handleOptionClick(option.value)}
                           >
-                            Block
+                           <span><Ban /></span> <span>Block</span>
                           </Button>
                         </li>
                         <li>
                           <Button
                            variant={'outline'}
-                            className="w-full border-none flex justify-start px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
+                            className="w-full border-none flex justify-start items-center px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
                             onClick={() =>setReportOpen(!reportOpen)}
                           >
-                            Report
+                            <span><ClipboardMinus /></span><span>Report</span>
                           </Button>
 
                         </li>
-                        <li>
+                        {/* <li>
                           <Button
                            variant={'outline'}
                             className="w-full border-none flex justify-start px-2 py-1 rounded-md hover:bg-gray-100 text-gray-800 cursor-pointer"
@@ -148,7 +148,7 @@ const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
                           >
                            View More
                           </Button>
-                        </li>
+                        </li> */}
                       </ul>
                     </PopoverContent>
                   </Popover>
@@ -168,7 +168,7 @@ const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
 
 
       <ReportDialog open={reportOpen} setOpen={setReportOpen}/>
-<ChatScreen open={chatOpen} setOpen={setChatOpen} userDetails={connectionData&&connectionData}/>
+<ChatScreen open={chatOpen} setOpen={setChatOpen} userDetails={connectionData&&connectionData} id={_id?.id}/>
     </div>
   );
 };
