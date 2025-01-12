@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { connectionRequest, sujjectionApi } from "@/services/services";
+import { connectionRequest, dismissedSujjectionApi, sujjectionApi } from "@/services/services";
 import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -13,7 +13,9 @@ const Sujjetion = ({ setConnectionCount, _id }: SujjectioProps) => {
   const [data, setData] = useState<any>();
   const [loading, setLoading] = useState(false);
   const [connectionReqLoading, setconnectionReqLoading] = useState(false);
-  const[sujjetionId,setSujjectionId]=useState("")
+  const [dismissReqLoading, setDissmissReqLoading] = useState(false);
+  const [sujjetionId, setSujjectionId] = useState("");
+  const [dismissedId, setDismissedId] = useState("");
   const fetchSearchResults = async (postData: any) => {
     setLoading(true);
 
@@ -73,6 +75,35 @@ const Sujjetion = ({ setConnectionCount, _id }: SujjectioProps) => {
   useEffect(() => {
     fetchSearchResults && fetchSearchResults({ _id: _id?.id });
   }, []);
+
+
+  
+
+  const dismissedRequest = async (postData: any) => {
+    setconnectionReqLoading(true);
+
+    try {
+      let apiResp = await dismissedSujjectionApi(postData);
+      console.log(apiResp);
+      if (apiResp.status === 201) {
+    
+        toast.success('User has been successfully dismissed.');
+        fetchSearchResults && fetchSearchResults({ _id: _id?.id });
+      } else {
+        toast.error(apiResp.data?.message);
+      }
+      return apiResp.data;
+    } catch (err) {
+      let error = err as Error | AxiosError;
+      if (axios.isAxiosError(error)) {
+        toast.error('An unexpected error occurred. Please try again later.');
+      } else {
+        toast.error('An unexpected error occurred. Please try again later.');
+      }
+    } finally {
+      setconnectionReqLoading(false); // Set loading state to false when request completes (whether success or failure)
+    }
+  };
   return (
     <div>
       {loading ? (
@@ -118,25 +149,44 @@ const Sujjetion = ({ setConnectionCount, _id }: SujjectioProps) => {
                   <div className="flex justify-center items-center space-x-2 text-sm">
                     <Button
                       className="h-8 w-[60px] text-sm font-semibold"
-                      disabled={connectionReqLoading&&cur?._id===sujjetionId}
-                      onClick={(e:any) =>{
-                        e.preventDefault()
+                      disabled={
+                        connectionReqLoading && cur?._id === sujjetionId
+                      }
+                      onClick={(e: any) => {
+                        e.preventDefault();
                         e.stopPropagation();
-                        setSujjectionId(cur?._id)
+                        setSujjectionId(cur?._id);
                         fetchConnectionRequest({
                           receiverId: cur?._id,
                           senderId: _id?.id,
-                        })}
-                      }
+                        });
+                      }}
                     >
-                      {connectionReqLoading&&cur?._id===sujjetionId ? "Wait..." : "Accept"}
+                      {connectionReqLoading && cur?._id === sujjetionId
+                        ? "Wait..."
+                        : "Accept"}
                     </Button>
-                    <Link
-                      to={"#"}
-                      className="hover:underline hover:underline-offset-4 font-medium text-gray-600"
+                    <Button
+                      // to={"#"}
+                      variant={"outline"}
+                      className="h-8 w-[60px] text-sm font-semibold"
+                      disabled={
+                        connectionReqLoading && cur?._id === dismissedId
+                      }
+                      onClick={(e: any) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDismissedId(cur?._id);
+                        dismissedRequest({
+                          _id: _id?.id,
+                          suggested_user_id: cur?._id,
+                        });
+                      }}
                     >
-                      Dismiss
-                    </Link>
+                      {dismissReqLoading && cur?._id === dismissedId
+                        ? "Wait..."
+                        : "Dismiss"}
+                    </Button>
                   </div>
                 </Card>
               </div>

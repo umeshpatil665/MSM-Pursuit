@@ -9,12 +9,61 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import React from "react";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { reportUserApi } from "@/services/services";
+import axios, { AxiosError } from "axios";
+import React, { useState } from "react";
+import { toast } from "sonner";
 interface ReportDialogProps {
   open: boolean;
   setOpen: (val: boolean) => void;
+  id:string;
+  userDetails:any
 }
-const ReportDialog = ({ open, setOpen }: ReportDialogProps) => {
+const ReportDialog = ({ open, setOpen,id,userDetails }: ReportDialogProps) => {
+  const reportOptions = [
+    { value: "Breaks rules of the group", label: "Breaks rules of the group" },
+    { value: "Harassment", label: "Harassment" },
+    { value: "Threatening violence", label: "Threatening violence" },
+    { value: "Hate", label: "Hate" },
+    { value: "Abuse", label: "Abuse" },
+    { value: "Impersonation", label: "Impersonation" },
+    { value: "Copyright violation", label: "Copyright violation" },
+    { value: "Trademark violation", label: "Trademark violation" },
+    { value: "Self-harm/suicide", label: "Self-harm/suicide" },
+    { value: "Spam", label: "Spam" },
+  ];
+  const [value, setValue] = useState(reportOptions[0]?.value);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [checked, setCheck] = useState();
+
+  const reportFetching = async (postData: any) => {
+    setLoading(true);
+
+    try {
+      let apiResp = await reportUserApi(postData);
+      console.log(apiResp);
+      if (apiResp.status === 201) {
+        // console.log(apiResp?.data?.recordsCount);
+        toast.success('Reported Succesfully');
+        
+      } else {
+        toast.error('An unexpected error occurred. Please try again later.');
+      }
+      return apiResp.data;
+    } catch (err) {
+      let error = err as Error | AxiosError;
+      if (axios.isAxiosError(error)) {
+        toast.error('An unexpected error occurred. Please try again later.');
+      } else {
+        toast.error('An unexpected error occurred. Please try again later.');
+      }
+    } finally {
+        setLoading(false); // Set loading state to false when request completes (whether success or failure)
+    }
+  };
+console.log(userDetails)
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -33,58 +82,22 @@ const ReportDialog = ({ open, setOpen }: ReportDialogProps) => {
                 happening and we'll look into it.
               </div>
               <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">
-                    Breaks rules of the group
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">Harassment</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">
-                    Threatening violence
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">Hate</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">Abuse</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">
-                    Impersonation
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">
-                    Copyright violation
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">
-                    Trademark violation
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">
-                    Self-harm/suicide
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox className="rounded-full" />
-                  <span className="text-sm font-medium -mt-1">Spam</span>
-                </div>
+                <RadioGroup
+                  defaultValue={reportOptions[0]?.value}
+                  onValueChange={(e: string) => setValue(e)}
+                >
+                  {reportOptions?.map(
+                    (
+                      { value, label }: { value: string; label: string },
+                      index: number
+                    ) => (
+                      <div className="flex items-center space-x-2" key={index}>
+                        <RadioGroupItem value={value} id={`r-${index}`} />
+                        <Label htmlFor={`r-${index}`}>{label}</Label>
+                      </div>
+                    )
+                  )}
+                </RadioGroup>
               </div>
               <div className=" bg-gray-100 flex items-center space-x-2 px-2 py-3 rounded-lg">
                 <div className="w-5 h-5 rounded-full border-[2px] border-blue-600 flex items-center justify-center text-xs font-bold text-blue-600">
@@ -103,7 +116,19 @@ const ReportDialog = ({ open, setOpen }: ReportDialogProps) => {
           </DialogHeader>
 
           <DialogFooter>
-            <Button className="w-full text-base font-bold bg-blue-950 hover:bg-blue-800">Done</Button>
+            <Button
+              className="w-full text-base font-bold bg-blue-950 hover:bg-blue-800"
+              disabled={!value || value === undefined || loading}
+              onClick={() =>
+                reportFetching({
+                  reportedPerson: userDetails?._id,
+                  reportedBy: id,
+                  comment: value,
+                })
+              }
+            >
+              Done
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

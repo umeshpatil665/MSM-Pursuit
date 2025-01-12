@@ -23,3 +23,9 @@ export const SENDER_WITHDRAW_REQUEST =apiUrl+'/api/v1/deleteconnectionrequest'
  export const SEND_CHAT_RESPONSE_API=apiUrl+"/api/v1/conversations"
 
  export const GLOBAL_SEARCH=apiUrl+"/api/v1/globalSearch"
+
+ export const CONNECTION_REPORT_USER=apiUrl+"/api/v1/report-user"
+
+ export const DISCONNECT_USER_CONNECTION=apiUrl+"/api/v1/disconnect-user"
+
+ export const DISMISSED_SUJJECTION_API=apiUrl+"/api/v1/dismiss-suggestion"
