@@ -21,7 +21,7 @@ const ReportDialog = ({ open, setOpen }: ReportDialogProps) => {
         {/* <DialogTrigger asChild>
       <Button variant="outline">Edit Profile</Button>
     </DialogTrigger> */}
-        <DialogContent className="sm:max-w-[425px] h-[600px]">
+        <DialogContent className="w-full sm:max-w-[425px] h-[600px]">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-center">
               Report

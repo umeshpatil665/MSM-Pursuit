@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { profileRequest } from "@/services/services";
 import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Profile = () => {
@@ -10,7 +10,7 @@ const Profile = () => {
   const [_id, setId] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-
+const naviigate=useNavigate()
   // Parse query params from URL
   useEffect(() => {
     const params:any = search && search.split("?")[1]?.split("&");
@@ -76,7 +76,8 @@ const Profile = () => {
         {/* Profile Header */}
         <div className="flex items-center space-x-6 border-b pb-6 mb-6">
           <img
-            src={data.profileImage}
+            // src={data.profileImage}
+            src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
             alt={`${data.firstname} ${data.lastname}`}
             className="w-24 h-24 rounded-full border-4 border-blue-600"
           />
@@ -137,6 +138,8 @@ const Profile = () => {
             </ul>
           </div>
         </div>
+
+        <div className="text-end text-sm underline underline-offset-4 cursor-pointer" onClick={()=>naviigate(`/pages/dashboard?id=${_id}`)}>Back</div>
       </Card>
     </div>
   );

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import ReportDialog from "./ReportDialog";
+import ChatScreen from "./Chat";
 interface ConnectionsProps {
   _id: any;
   setConnectionCount: React.Dispatch<React.SetStateAction<any>>;
@@ -21,12 +22,14 @@ const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();
   const [reportOpen,setReportOpen]=useState<boolean>(false)
+  const [chatOpen,setChatOpen]=useState<boolean>(false)
+  const [connectionData,setConnectionData]=useState<any>()
   const fetchSearchConnection = async (postData: any) => {
     setLoading(true);
 
     try {
       let apiResp = await getConnection(postData);
-      console.log(apiResp);
+      
       if (apiResp.status === 200) {
         console.log(apiResp?.data?.users);
         setData(apiResp?.data?.users);
@@ -69,7 +72,7 @@ const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
     { value: "view_more", label: "View More" },
   ];
 
-  console.log(data);
+  
   return (
     <div className="w-full  mx-auto ">
       {loading ? (
@@ -151,7 +154,9 @@ const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
                   </Popover>
                 </div>
                 <div>
-                  <MessageSquareMore />
+                  <MessageSquareMore onClick={()=>{setChatOpen(!chatOpen);
+                    setConnectionData(user)
+                  }}/>
                 </div>
               </div>
             </li>
@@ -160,7 +165,10 @@ const Connections = ({ _id, setConnectionCount }: ConnectionsProps) => {
       ) : (
         <div>No Connection available</div>
       )}
+
+
       <ReportDialog open={reportOpen} setOpen={setReportOpen}/>
+<ChatScreen open={chatOpen} setOpen={setChatOpen} userDetails={connectionData&&connectionData}/>
     </div>
   );
 };
