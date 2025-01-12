@@ -15,3 +15,5 @@ export const GET_PROFILES=apiUrl+"/api/v1/getprofile"
 
 export const GET_CONNECTION_API=apiUrl+"/api/v1/getUserConnections"
 export const GET_SENDER_API=apiUrl+"/api/v1/getConnectionListBysender"
+
+export const SENDER_WITHDRAW_REQUEST =apiUrl+'/api/v1/deleteconnectionrequest'

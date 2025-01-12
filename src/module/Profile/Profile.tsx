@@ -73,11 +73,12 @@ const naviigate=useNavigate()
   return (
     <div className="w-full h-full flex flex-col items-center bg-gray-100 py-8">
       <Card className="w-[70%] shadow-lg rounded-lg bg-white p-6">
+      <div className="text-end text-base underline underline-offset-4 cursor-pointer" onClick={()=>naviigate(`/pages/dashboard?id=${_id}`)}>Back</div>
         {/* Profile Header */}
         <div className="flex items-center space-x-6 border-b pb-6 mb-6">
           <img
-            // src={data.profileImage}
-            src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
+            src={data.profileImage}
+            // src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
             alt={`${data.firstname} ${data.lastname}`}
             className="w-24 h-24 rounded-full border-4 border-blue-600"
           />
@@ -139,7 +140,7 @@ const naviigate=useNavigate()
           </div>
         </div>
 
-        <div className="text-end text-sm underline underline-offset-4 cursor-pointer" onClick={()=>naviigate(`/pages/dashboard?id=${_id}`)}>Back</div>
+        
       </Card>
     </div>
   );

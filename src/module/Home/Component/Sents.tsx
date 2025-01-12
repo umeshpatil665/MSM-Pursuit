@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import {
   connectionRequest,
   getsenderApi,
+  senderWithdrawApi,
   sujjectionApi,
 } from "@/services/services";
 import axios, { AxiosError } from "axios";
@@ -17,6 +18,7 @@ const Sents = ({ setConnectionCount, _id }: SentsProps) => {
   const [data, setData] = useState<any>();
   const [loading, setLoading] = useState(false);
   const [connectionReqLoading, setconnectionReqLoading] = useState(false);
+  const [sentId, setConnectionId] = useState("");
   const fetchSentsResults = async (postData: any) => {
     setLoading(true);
 
@@ -26,10 +28,10 @@ const Sents = ({ setConnectionCount, _id }: SentsProps) => {
       if (apiResp.status === 200) {
         setData(apiResp?.data?.connections);
         const coount =
-        Array.isArray(apiResp?.data?.connections) &&
-        apiResp?.data?.connections?.length > 0
-          ? apiResp?.data?.connections?.length
-          : 0;
+          Array.isArray(apiResp?.data?.connections) &&
+          apiResp?.data?.connections?.length > 0
+            ? apiResp?.data?.connections?.length
+            : 0;
         setConnectionCount && setConnectionCount(coount);
       } else {
         toast.error(apiResp.data?.message);
@@ -47,30 +49,31 @@ const Sents = ({ setConnectionCount, _id }: SentsProps) => {
     }
   };
 
-  // const fetchConnectionRequest = async (postData: any) => {
-  //   setconnectionReqLoading(true);
+  const sentRequest = async (postData: any) => {
+    setconnectionReqLoading(true);
 
-  //   try {
-  //     let apiResp = await connectionRequest(postData);
-  //     console.log(apiResp);
-  //     if (apiResp.status === 200) {
-  //       console.log(apiResp?.data?.recordsCount);
-  //       toast.success(apiResp?.data?.message);
-  //     } else {
-  //       toast.error(apiResp.data?.message);
-  //     }
-  //     return apiResp.data;
-  //   } catch (err) {
-  //     let error = err as Error | AxiosError;
-  //     if (axios.isAxiosError(error)) {
-  //       toast.error(error.response?.data.message);
-  //     } else {
-  //       toast.error(error.message);
-  //     }
-  //   } finally {
-  //     setconnectionReqLoading(false); // Set loading state to false when request completes (whether success or failure)
-  //   }
-  // };
+    try {
+      let apiResp = await senderWithdrawApi(postData);
+      console.log(apiResp);
+      if (apiResp.status === 200) {
+        // console.log(apiResp?.data?.recordsCount);
+        toast.success(apiResp?.data?.message);
+        fetchSentsResults && fetchSentsResults({ senderId: _id?.id });
+      } else {
+        toast.error(apiResp.data?.message);
+      }
+      return apiResp.data;
+    } catch (err) {
+      let error = err as Error | AxiosError;
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      } else {
+        toast.error(error.message);
+      }
+    } finally {
+      setconnectionReqLoading(false); // Set loading state to false when request completes (whether success or failure)
+    }
+  };
 
   useEffect(() => {
     if (_id?.id) {
@@ -122,14 +125,19 @@ const Sents = ({ setConnectionCount, _id }: SentsProps) => {
                 </div>
                 <div className="flex justify-center items-center space-x-2 text-sm">
                   <Button
-                    className="h-8 w-[80px] text-sm font-semibold px-2"
-                    disabled={connectionReqLoading}
-                    // onClick={()=>fetchConnectionRequest({
-                    //        receiverId: cur?._id,
-                    //        senderId: _id?.id,
-                    // })}
+                    className="h-8 w-[80px] text-sm font-semibold px-2 bg-red-500 hover:bg-red-500"
+                    disabled={connectionReqLoading && sentId === cur?._id}
+                    onClick={() => {
+                      setConnectionId(cur?._id);
+                      sentRequest({
+                        id: cur?._id,
+                        // senderId: _id?.id,
+                      });
+                    }}
                   >
-                    {connectionReqLoading ? "Wait..." : "Withdraw "}
+                    {connectionReqLoading && sentId === cur?._id
+                      ? "Wait..."
+                      : "Withdraw "}
                   </Button>
                   {/* <Link
                     to={"#"}

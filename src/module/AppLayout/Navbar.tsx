@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, User } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IMenuItem, Menu } from "./modules";
@@ -216,13 +216,14 @@ const Navbar = () => {
                   {}
                 )}
               >
-                <span>
-                  <img
+                <span className="flex justify-center items-center w-8 h-8 rounded-full border border-gray-500">
+                  {/* <img
                     src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
                     className="rounded-full"
                     style={{ width: "30px", height: "30px" }}
                     alt="Avatar"
-                  />
+                  /> */}
+                  <User className="w-6 h-6 text-black" />
                 </span>
                 <span className="flex items-center space-x-2">
                   <span className=" text-[10px] ">Me</span>
@@ -236,7 +237,7 @@ const Navbar = () => {
               <div className="flex items-center space-x-4">
                 <img
                   className="w-[60px] h-[60px] rounded-full"
-                  src={'https://mdbcdn.b-cdn.net/img/new/avatars/8.webp'}
+                  src={data?.profileImage}
                   alt={data?.firstname}
                 />
                 <div className="space-y-1">

@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
-import { CONNECTION_REQUEST, GET_CONNECTION_API, GET_PROFILES, GET_SENDER_API, GET_SUJJECTION_API, INVITATION_LIST, JOKES_URL, LOGIN_URL, SEARCH_CONNECTION, UPDATE_CONNECTION_STATUS } from "./api"
+import { CONNECTION_REQUEST, GET_CONNECTION_API, GET_PROFILES, GET_SENDER_API, GET_SUJJECTION_API, INVITATION_LIST, JOKES_URL, LOGIN_URL, SEARCH_CONNECTION, SENDER_WITHDRAW_REQUEST, UPDATE_CONNECTION_STATUS } from "./api"
 
 // export const jokesFetching=()=>{
 //     axios.get('/api/v1/jokes').then((d: AxiosResponse) => {
@@ -68,5 +68,11 @@ export function jokesFetching(
   export const getsenderApi=(postData: any) => {
     return axios
       .post(`${GET_SENDER_API}`,postData)
+      .then((d: AxiosResponse<any>) => d);
+  };
+
+  export const senderWithdrawApi=(postData: any) => {
+    return axios
+      .post(`${SENDER_WITHDRAW_REQUEST}`,postData)
       .then((d: AxiosResponse<any>) => d);
   };
