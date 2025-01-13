@@ -62,7 +62,7 @@ const Home = () => {
     <div className="w-full p-2 flex flex-col h-full">
       
  <Card className="w-full p-2">
-        <HomeLayout tabValue={tabValue} />
+        <HomeLayout tabValue={tabValue} _id={_id?.id}/>
         <hr className="w-full border border-violet-600/10 mt-2" />
         <div className="w-full flex items-center space-x-4 mt-2">
           {homeItems?.map(

@@ -107,7 +107,7 @@ const ChatScreen = ({ open, setOpen, userDetails, id }: ChatScreenProps) => {
           {chatData && Array.isArray(chatData) && chatData?.length > 0 ? (
             chatData.map((cur: any, index: number) => (
               <div className=" p-4 space-y-4 bg-white" key={index}>
-                {id === cur?.senderUserId ? (
+                {id !== cur?.senderUserId ? (
                   <div className="flex items-start space-x-2">
                     <div className="w-8 h-8 rounded-full bg-gray-400" />
                     <div className="bg-gray-100 px-3 py-2 rounded-lg max-w-xs text-sm">
@@ -121,9 +121,7 @@ const ChatScreen = ({ open, setOpen, userDetails, id }: ChatScreenProps) => {
                     </div>
                   </div>
                 )}
-                {/* Sender message */}
 
-                {/* Receiver message */}
               </div>
             ))
           ) : (

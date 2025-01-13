@@ -15,9 +15,10 @@ import axios, { AxiosError } from "axios";
 import { serachFilterApi } from "@/services/services";
 import { Link } from "react-router-dom";
 interface HomeLayoutProps{
-    tabValue:any
+    tabValue:any,
+    _id:string
 }
-const HomeLayout = ({tabValue}:HomeLayoutProps) => {
+const HomeLayout = ({tabValue,_id}:HomeLayoutProps) => {
   const [searchValue, setSearchValue] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
@@ -28,6 +29,7 @@ const [open,setOpen]=useState(false)
     if (value) {
       let obj = {
         query: value,
+        _id:_id
       };
       fetchSearchResults(obj);
     } else {
